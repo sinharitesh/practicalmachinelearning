@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=9" >
+
+<title>Personal activity prediction with data from devices such as Jawbone Up, Nike fuelband and Fitbit</title>
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+
+</style>
+
+
+
+
+
+</head>
+
+<body>
+<h1>Personal activity prediction with data from devices such as Jawbone Up, Nike fuelband and Fitbit</h1>
+
+<p>Predcition of human activity is performed using machine learning procedures. The model is built using the 
+provided dataset.This dataset has 19622 rows and 160 columns. The columns classe is the activity variable and the task at hand is to predict this activity with a model built with machine learning procedures such as Gradient Boosting, Support Vector Machines and Generalized Linear models.</p>
+
+<h2>About the Data</h2>
+
+<p>The data for this assignment is provided at Coursera Website[1].
+This data is kindly contributed by Groupware[2]. 
+In addition to this - there is testing data[3] available where model built from this assignment will be used to predict the outcomes. </p>
+
+<p>The training dataset has 19622 and 160 columns. There is a classe column which can take values A,B,C,D and E. The task of this assignment is to build a model which can predict the classe column of an unknown dataset. </p>
+
+<p>The distribution of A, B, C, D and E responses on training dataset are as following:
+<img src="data:image/png;base64,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" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" style="display: block; margin: auto auto auto 0;" /></p>
+
+<h2>Analysis Toolkit</h2>
+
+<p>caret package[4] and its functionalities have been heavily used for data partitioning, model building and other activities. </p>
+
+<h2>Variable Selection</h2>
+
+<p>As the number of predictors are large, 159, it is imperative that prominent variables should be determined. As with large number of columns, computational efficiency will not be high. Here, models are built with a 25% of the dataset. From these models, important variables are determined With this dataset, three different machine learning methods were applied, namely rpart, SVM (Radial) and Random Forests. Here, another approach could have been to use methods such as Principal Component Analysis, but using a 25% of dataset and a number of methods have ensured that we have got the required columns. Variable Importance was determined by using varImp function call as suggested by Max kuhn[5].</p>
+
+<p>With above three models in place, the important variables in the dataset have been determined. Some of these variables are as following:</p>
+
+<ul>
+<li>accel_arm_y</li>
+<li>accel_arm_z</li>
+<li>accel_dumbbell_x</li>
+<li>accel_forearm_z</li>
+<li>amplitude_pitch_belt</li>
+<li>avg_pitch_dumbbell</li>
+<li>avg_pitch_forearm</li>
+<li>gyros_belt_x</li>
+<li>magnet_arm_x</li>
+<li>magnet_arm_y</li>
+<li>magnet_arm_z</li>
+<li>magnet_dumbbell_x</li>
+<li>min_pitch_dumbbell</li>
+<li>min_roll_dumbbell</li>
+<li>min_roll_forearm</li>
+</ul>
+
+<h2>Data Selection - Training and Testing sets</h2>
+
+<p>Data Selection for training and testing. From the provided dataset, 70% of data is retained for model building and 30% is left for validation. With the help of caret package, data partition is created. Also, only above mentioned columns were retained for model building and further analysis.</p>
+
+<p>The training and testing sets have 13737 and 5885 rows respectively.</p>
+
+<h2>Handling missing values and Data imputation</h2>
+
+<p>Upon examining the training data set, it has been found data is missing at a number of places and 13447 records reported missing data. Since this value is quite high, ignoring them would lead to leaving a good amount of sample data. So missing data needs to be handled appropriately. To deal with missing data, method of imputation with K Nearest Neighbours model is used. This has ensured that there are no missing values and the machine learning model can deal with missing data appropriately.</p>
+
+<h2>Model Building</h2>
+
+<p>With data imputed in place, model fitting has been done. For this, <strong>Gradient Boosting model</strong> approach has been used as it is found to have done well in prediction tasks. Another model, which could be used for its versatility is Random Forests. Since Random Forest has aleady been applied in variable selection, hence Gradient boosting model is selected.</p>
+
+<h2>Evaluating model performance </h2>
+
+<p>Once a model is fitted, its effectiveness has been measured on the data kep aside for testing purpose (cross validation with test set). This model appears to have done well very few prediction cases have been reported incorrect.</p>
+
+<p>Close examination of the model yields that num_window, pitch_forearm, magnet_dumbbell_x, min_yaw_arm are among the most significant variables. The variables least important are stddev_pitch_dumbbell, stddev_yaw_dumbbell and var_pitch_dumbbell. The performance of the model is then evaluated while predicting on the testing set. Detailed performance of the model is as shown below. The specifity and sensititivity values are also quite good. </p>
+
+<h2>Out of sample errors</h2>
+
+<p>The model is evaluated on testing (cross validation) set. Out of sample error is <strong>0.6627</strong> percent. As this model has performed well and less than 1% of error being reported, further model building is not done. If the performance has been not so good, further models could have been developed and combined. Support Vector Machines[6], Generalized Linear Model and Random Forests[7] could have been thought of building various models and with the help of caret package, they could have been combined.</p>
+
+<pre><code>## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction    A    B    C    D    E
+##          A 1670    3    0    0    2
+##          B    3 1130    3    2    5
+##          C    0    0 1019    0    0
+##          D    0    4    1  962   10
+##          E    1    2    3    0 1065
+## 
+## Overall Statistics
+##                                         
+##                Accuracy : 0.993         
+##                  95% CI : (0.991, 0.995)
+##     No Information Rate : 0.284         
+##     P-Value [Acc &gt; NIR] : &lt;2e-16        
+##                                         
+##                   Kappa : 0.992         
+##  Mcnemar&#39;s Test P-Value : NA            
+## 
+## Statistics by Class:
+## 
+##                      Class: A Class: B Class: C Class: D Class: E
+## Sensitivity             0.998    0.992    0.993    0.998    0.984
+## Specificity             0.999    0.997    1.000    0.997    0.999
+## Pos Pred Value          0.997    0.989    1.000    0.985    0.994
+## Neg Pred Value          0.999    0.998    0.999    1.000    0.996
+## Prevalence              0.284    0.194    0.174    0.164    0.184
+## Detection Rate          0.284    0.192    0.173    0.163    0.181
+## Detection Prevalence    0.285    0.194    0.173    0.166    0.182
+## Balanced Accuracy       0.998    0.995    0.997    0.997    0.992
+</code></pre>
+
+<h2>Performance of model on Course test</h2>
+
+<p>The performance of the above model is tested on the test set provided for course submission. This model has provided accurate results on all 20 test cases.</p>
+
+<h2>References</h2>
+
+<ol>
+<li>Coursera Training Set. <a href="https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv">https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv</a>.</li>
+<li>Groupware.  <a href="http://groupware.les.inf.puc-rio.br/har">http://groupware.les.inf.puc-rio.br/har</a></li>
+<li>Coursera Testing Set. This data is available at <a href="https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv">https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv</a></li>
+<li>Classification and Regression Training. <a href="http://cran.r-project.org/package=caret">http://cran.r-project.org/package=caret</a></li>
+<li>Building Predictive Models in R Using the caret Package - <a href="http://www.jstatsoft.org/v28/i05/paper">http://www.jstatsoft.org/v28/i05/paper</a></li>
+<li>Support Vector Machines - <a href="http://en.wikipedia.org/wiki/Support_vector_machine">http://en.wikipedia.org/wiki/Support_vector_machine</a> </li>
+<li>Random Forests - <a href="http://en.wikipedia.org/wiki/Random_forest">http://en.wikipedia.org/wiki/Random_forest</a></li>
+</ol>
+
+</body>
+
+</html>
+

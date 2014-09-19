@@ -1,0 +1,186 @@
+Personal activity prediction with data from devices such as Jawbone Up, Nike fuelband and Fitbit
+=======
+
+```{r echo=FALSE, warning=FALSE, message = FALSE }
+library(caret)
+pml <- read.csv('pml-training.csv')
+
+```
+Predcition of human activity is performed using machine learning procedures. The model is built using the 
+provided dataset.This dataset has `r nrow(pml)` rows and `r ncol(pml)` columns. The columns classe is the activity variable and the task at hand is to predict this activity with a model built with machine learning procedures such as Gradient Boosting, Support Vector Machines and Generalized Linear models.
+About the Data
+------------
+The data for this assignment is provided at Coursera Website[1].
+This data is kindly contributed by Groupware[2]. 
+In addition to this - there is testing data[3] available where model built from this assignment will be used to predict the outcomes. 
+
+The training dataset has `r nrow(pml)` and `r ncol(pml)` columns. There is a classe column which can take values A,B,C,D and E. The task of this assignment is to build a model which can predict the classe column of an unknown dataset. 
+
+The distribution of A, B, C, D and E responses on training dataset are as following:
+```{r echo=FALSE, warning=FALSE, message = FALSE, fig.align='left', fig.width=12, fig.height=6 }
+ggplot(pml,aes(x = factor(""), fill = classe) ) +   geom_bar() + coord_polar(theta = "y") + scale_x_discrete("")
+```
+Analysis Toolkit
+----------------
+caret package[4] and its functionalities have been heavily used for data partitioning, model building and other activities. 
+
+Variable Selection
+------------
+As the number of predictors are large, `r ncol(pml) -1 `, it is imperative that prominent variables should be determined. As with large number of columns, computational efficiency will not be high. Here, models are built with a 25% of the dataset. From these models, important variables are determined With this dataset, three different machine learning methods were applied, namely rpart, SVM (Radial) and Random Forests. Here, another approach could have been to use methods such as Principal Component Analysis, but using a 25% of dataset and a number of methods have ensured that we have got the required columns. Variable Importance was determined by using varImp function call as suggested by Max kuhn[5].
+
+```{r echo=FALSE, warning=FALSE, message = FALSE }
+set.seed(23456)
+index.train.25 <- createDataPartition(y=pml$classe, p = 0.25, list = FALSE)
+train.25 <- pml[index.train.25,]
+# Creating model with rpart
+mod.rpart.25 <- train(classe ~ ., method = "rpart", data = train.25) 
+#save(mod.rpart.25, file = 'mod.rpart.25')
+#load(file = 'mod.rpart.25')
+rpartimp <- varImp(mod.rpart.25) # This provides the important variables in the model created.
+# Creating model with SVM
+bootControl <- trainControl(number = 200)
+mod.svmradial.25 <- train(classe ~ ., method = "svmRadial", data = train.25, tuneLength = 5, trControl = bootControl, scaled = FALSE) 
+#load(file = 'mod.svmradial.25')
+svmimp <- varImp(mod.svmradial.25)
+#save(mod.svmradial.25, file = 'mod.svmradial.25')
+
+# Creating Randoem forest model
+mod.rf.25 <- train(classe ~ ., method = "rf", data = train.25) 
+#load(file = 'mod.rf.25')
+rfimp <- varImp(mod.rf.25)
+#save(mod.rf.25, file = 'mod.rf.25')
+
+################################################################################
+```
+With above three models in place, the important variables in the dataset have been determined. Some of these variables are as following:
+
+- accel_arm_y
+- accel_arm_z
+- accel_dumbbell_x
+- accel_forearm_z
+- amplitude_pitch_belt
+- avg_pitch_dumbbell
+- avg_pitch_forearm
+- gyros_belt_x
+- magnet_arm_x
+- magnet_arm_y
+- magnet_arm_z
+- magnet_dumbbell_x
+- min_pitch_dumbbell
+- min_roll_dumbbell
+- min_roll_forearm
+
+Data Selection - Training and Testing sets
+------------
+Data Selection for training and testing. From the provided dataset, 70% of data is retained for model building and 30% is left for validation. With the help of caret package, data partition is created. Also, only above mentioned columns were retained for model building and further analysis.
+```{r echo=FALSE, warning=FALSE, message = FALSE }
+selected.columns <- c(which(colnames(pml)=='accel_arm_y')
+                      ,which(colnames(pml)=='accel_arm_z')
+                      ,which(colnames(pml)=='accel_dumbbell_x')
+                      ,which(colnames(pml)=='accel_forearm_z')
+                      ,which(colnames(pml)=='amplitude_pitch_belt')
+                      ,which(colnames(pml)=='avg_pitch_dumbbell')
+                      ,which(colnames(pml)=='avg_pitch_forearm')
+                      ,which(colnames(pml)=='gyros_belt_x')
+                      ,which(colnames(pml)=='magnet_arm_x')
+                      ,which(colnames(pml)=='magnet_arm_y')
+                      ,which(colnames(pml)=='magnet_arm_z')
+                      ,which(colnames(pml)=='magnet_dumbbell_x')
+                      ,which(colnames(pml)=='min_pitch_dumbbell')
+                      ,which(colnames(pml)=='min_roll_dumbbell')
+                      ,which(colnames(pml)=='min_roll_forearm')
+                      ,which(colnames(pml)=='min_yaw_arm')
+                      ,which(colnames(pml)=='num_window')
+                      ,which(colnames(pml)=='pitch_arm')
+                      ,which(colnames(pml)=='pitch_forearm')
+                      ,which(colnames(pml)=='stddev_pitch_belt')
+                      ,which(colnames(pml)=='stddev_pitch_dumbbell')
+                      ,which(colnames(pml)=='stddev_roll_belt')
+                      ,which(colnames(pml)=='stddev_roll_dumbbell')
+                      ,which(colnames(pml)=='stddev_yaw_arm')
+                      ,which(colnames(pml)=='stddev_yaw_dumbbell')
+                      ,which(colnames(pml)=='var_accel_dumbbell')
+                      ,which(colnames(pml)=='var_accel_forearm')
+                      ,which(colnames(pml)=='var_pitch_belt')
+                      ,which(colnames(pml)=='var_pitch_dumbbell')
+                      ,which(colnames(pml)=='var_roll_belt')
+                      ,which(colnames(pml)=='var_roll_dumbbell')
+                      ,which(colnames(pml)=='var_total_accel_belt')
+                      ,which(colnames(pml)=='var_yaw_dumbbell')
+                      ,which(colnames(pml)=='classe')
+)
+pmls <- pml[,selected.columns]
+pmls.inTrain <- createDataPartition(y=pmls$classe, p = 0.7, list = FALSE)
+pmls.training <- pmls[pmls.inTrain,]
+pmls.testing <- pmls[-pmls.inTrain,]
+#head(pmls)
+
+```
+The training and testing sets have `r nrow(pmls.training)` and `r nrow(pmls.testing)` rows respectively.
+Handling missing values and Data imputation
+------------
+```{r echo=FALSE, warning=FALSE, message = FALSE }
+
+```
+```{r echo=FALSE, warning=FALSE, message = FALSE }
+## Data imputation
+classe.column <- which(colnames(pmls.training)=='classe')
+pmls.training.classe <- pmls.training[,c(classe.column)]
+pmls.training.predictors <- pmls.training[,-c(classe.column)]
+cc <- complete.cases(pmls.training.predictors)
+#head(cc)
+missing.data <- length(cc[cc == FALSE])
+#missing.data
+preimputation.obj <- preProcess(pmls.training.predictors, method = "knnImpute") # This preobj will be used on 
+#testing set as well
+#load(file = 'preimputation.obj')
+pmls.imputed.training.predictors <- predict(preimputation.obj, pmls.training.predictors)
+
+```
+Upon examining the training data set, it has been found data is missing at a number of places and `r missing.data` records reported missing data. Since this value is quite high, ignoring them would lead to leaving a good amount of sample data. So missing data needs to be handled appropriately. To deal with missing data, method of imputation with K Nearest Neighbours model is used. This has ensured that there are no missing values and the machine learning model can deal with missing data appropriately.
+Model Building
+------------
+With data imputed in place, model fitting has been done. For this, **Gradient Boosting model** approach has been used as it is found to have done well in prediction tasks. Another model, which could be used for its versatility is Random Forests. Since Random Forest has aleady been applied in variable selection, hence Gradient boosting model is selected.
+```{r echo=FALSE, warning=FALSE, message = FALSE }
+pmls.data <- cbind(pmls.imputed.training.predictors, classe = pmls.training.classe)
+#mod.GBM <- train(classe ~ ., method = "gbm", data = pmls.data, verbose = FALSE)
+load(file = 'mod.GBM')
+
+#save(mod.GBM, file = 'mod.GBM')
+```
+Evaluating model performance 
+------------
+Once a model is fitted, its effectiveness has been measured on the data kep aside for testing purpose (cross validation with test set). This model appears to have done well very few prediction cases have been reported incorrect.
+```{r echo=FALSE, warning=FALSE, message = FALSE }
+classe.column <- which(colnames(pmls.testing)=='classe')
+testing.classe <- pmls.testing[,c(classe.column)]
+pmls.testing.predictors <- pmls.testing[,-c(classe.column)]
+pmls.imputed.testing.predictors <- predict(preimputation.obj, pmls.testing.predictors)
+predict.testing <- predict(mod.GBM, newdata =  pmls.imputed.testing.predictors)
+correct.results <- (predict.testing == testing.classe)
+error.percent <- 100 * length(correct.results[correct.results == FALSE])/ length(correct.results)
+
+```
+Close examination of the model yields that num_window, pitch_forearm, magnet_dumbbell_x, min_yaw_arm are among the most significant variables. The variables least important are stddev_pitch_dumbbell, stddev_yaw_dumbbell and var_pitch_dumbbell. The performance of the model is then evaluated while predicting on the testing set. Detailed performance of the model is as shown below. The specifity and sensititivity values are also quite good. 
+
+Out of sample errors
+-------------------
+The model is evaluated on testing (cross validation) set. Out of sample error is **`r error.percent`** percent. As this model has performed well and less than 1% of error being reported, further model building is not done. If the performance has been not so good, further models could have been developed and combined. Support Vector Machines[6], Generalized Linear Model and Random Forests[7] could have been thought of building various models and with the help of caret package, they could have been combined.
+
+```{r echo=FALSE, warning=FALSE, message = FALSE }
+confusionMatrix(predict.testing, testing.classe)
+
+```
+Performance of model on Course test
+------------------
+The performance of the above model is tested on the test set provided for course submission. This model has provided accurate results on all 20 test cases.
+
+References
+------------
+1. Coursera Training Set. https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv.
+2. Groupware.  http://groupware.les.inf.puc-rio.br/har
+3. Coursera Testing Set. This data is available at https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv
+4. Classification and Regression Training. http://cran.r-project.org/package=caret
+5. Building Predictive Models in R Using the caret Package - http://www.jstatsoft.org/v28/i05/paper
+6. Support Vector Machines - http://en.wikipedia.org/wiki/Support_vector_machine 
+7. Random Forests - http://en.wikipedia.org/wiki/Random_forest
